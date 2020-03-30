@@ -21,6 +21,7 @@ RUN apt update \
          lua5.2 \
          liblua5.2-dev
 
+# Build and insteall osm2pgsql, then clean up
 RUN git clone git://github.com/openstreetmap/osm2pgsql.git \
     && cd osm2pgsql \
     && rm -rf .git \
@@ -29,4 +30,8 @@ RUN git clone git://github.com/openstreetmap/osm2pgsql.git \
     && cmake .. \
     && make -j $(nproc) \
     && make install \
-    && rm -rf osm2pgsql
+    && rm -rf osm2pgsql \
+    && cd /
+
+RUN wget http://download.geofabrik.de/europe/luxembourg-latest.osm.pbf \
+    && wget http://download.geofabrik.de/europe/luxembourg.poly
