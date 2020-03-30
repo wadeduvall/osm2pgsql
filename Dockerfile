@@ -5,6 +5,7 @@ RUN apt update \
     && apt upgrade -y \
     && apt install -y --no-install-recommends \
          git \
+         wget \
          make \
          cmake \
          g++ \
@@ -30,8 +31,18 @@ RUN git clone git://github.com/openstreetmap/osm2pgsql.git \
     && cmake .. \
     && make -j $(nproc) \
     && make install \
-    && rm -rf osm2pgsql \
-    && cd /
+    && rm -rf osm2pgsql
 
-RUN wget http://download.geofabrik.de/europe/luxembourg-latest.osm.pbf \
-    && wget http://download.geofabrik.de/europe/luxembourg.poly
+RUN wget -nv http://download.geofabrik.de/europe/luxembourg-latest.osm.pbf \
+    -O /data.osm.pbf \
+    && wget -nv http://download.geofabrik.de/europe/luxembourg.poly \
+    -O /data.poly
+
+RUN git clone git://github.com/gravitystorm/openstreetmap-carto \
+    && cd openstreetmap-carto \
+    && git checkout v5.0.0 \
+    && rm -rf .git
+
+COPY run.sh /
+
+ENTRYPOINT ["/run.sh"]
