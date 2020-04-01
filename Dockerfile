@@ -25,6 +25,7 @@ RUN apt update \
 # Build and insteall osm2pgsql, then clean up
 RUN git clone git://github.com/openstreetmap/osm2pgsql.git \
     && cd osm2pgsql \
+    && git checkout 1.2.1
     && rm -rf .git \
     && mkdir build \
     && cd build \
