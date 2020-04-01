@@ -44,5 +44,4 @@ RUN git clone git://github.com/gravitystorm/openstreetmap-carto \
     && rm -rf .git
 
 COPY run.sh /
-
-ENTRYPOINT ["/run.sh"]
+RUN chmod 0700 /run.sh
