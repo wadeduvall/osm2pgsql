@@ -35,15 +35,10 @@ RUN git clone git://github.com/openstreetmap/osm2pgsql.git \
     && cd / \
     && rm -rf osm2pgsql
 
-RUN wget -nv http://download.geofabrik.de/europe/luxembourg-latest.osm.pbf \
-    -O /data.osm.pbf \
-    && wget -nv http://download.geofabrik.de/europe/luxembourg.poly \
-    -O /data.poly
-
 RUN git clone git://github.com/gravitystorm/openstreetmap-carto \
     && cd openstreetmap-carto \
     && git checkout v5.0.0 \
     && rm -rf .git
 
-COPY run.sh /
-RUN chmod 0700 /run.sh
+COPY import.sh /import.sh
+RUN chmod 0700 /import.sh
