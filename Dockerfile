@@ -1,7 +1,7 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Install dependencies
-RUN apt update \
+RUN export DEBIAN_FRONTEND=noninteractive && apt update \
     && apt upgrade -y \
     && apt install -y --no-install-recommends \
          git \

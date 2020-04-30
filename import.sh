@@ -23,6 +23,7 @@ if [ -f /data.poly ]; then
 fi
 
 if [ "$IMPORT" = true ]; then
+    echo "Importing"
     osm2pgsql -H postgis -U $POSTGRES_USER -d $POSTGRES_DB \
     --create --slim -G --hstore \
     --tag-transform-script /openstreetmap-carto/openstreetmap-carto.lua \
@@ -32,6 +33,8 @@ if [ "$IMPORT" = true ]; then
 
     touch /var/lib/mod_tile/planet-import-complete
 elif [ "$UPDATE" = true ]; then
+    echo "Updating"
+    rm -rf /var/lib/mod_tile/ajt
     osm2pgsql -H postgis -U $POSTGRES_USER -d $POSTGRES_DB \
     --append --slim -G --hstore \
     --tag-transform-script /openstreetmap-carto/openstreetmap-carto.lua \
