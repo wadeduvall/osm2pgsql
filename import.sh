@@ -5,21 +5,21 @@ if [ ! -f "/root/.pgpass" ]; then
     chmod 0600 /root/.pgpass
 fi
 
-if [ ! -f /data.osm.pbf ] && [ -z "$PBF" ]; then
+if [ ! -f /data/data.osm.pbf ] && [ -z "$PBF" ]; then
     echo "WARNING: No import file or URL specified, please mount the pbf file
-    to /data.osm.pbf or specify a URL with \$PBF"
+    to /data/data.osm.pbf or specify a URL with \$PBF"
 fi
 
 if [ -n "$PBF" ]; then
-    wget -nv "$PBF" -O /data.osm.pbf
+    wget -nv "$PBF" -O /data/data.osm.pbf
     
     if [ -n "$POLY" ]; then
-        wget -nv "$POLY" -O /data.poly
+        wget -nv "$POLY" -O /data/data.poly
     fi
 fi
 
-if [ -f /data.poly ]; then
-    cp /data.poly /var/lib/mod_tile/data.poly
+if [ -f /data/data.poly ]; then
+    cp /data/data.poly /var/lib/mod_tile/data.poly
 fi
 
 if [ "$IMPORT" = true ]; then
@@ -29,7 +29,7 @@ if [ "$IMPORT" = true ]; then
     --tag-transform-script /openstreetmap-carto/openstreetmap-carto.lua \
     --number-processes ${THREADS:-4} ${OSM2PGSQL_EXTRA_ARGS} \
     -S /openstreetmap-carto/openstreetmap-carto.style \
-    /data.osm.pbf
+    /data/data.osm.pbf
 
     touch /var/lib/mod_tile/planet-import-complete
 elif [ "$UPDATE" = true ]; then
@@ -40,5 +40,10 @@ elif [ "$UPDATE" = true ]; then
     --tag-transform-script /openstreetmap-carto/openstreetmap-carto.lua \
     --number-processes ${THREADS:-4} ${OSM2PGSQL_EXTRA_ARGS} \
     -S /openstreetmap-carto/openstreetmap-carto.style \
-    /data.osm.pbf
+    /data/data.osm.pbf
 fi
+
+cd /openstreetmap-carto/
+psql -h postgis -U $POSTGRES_USER -d $POSTGRES_DB -f indexes.sql
+scripts/get-external-data.py -H postgis -U $POSTGRES_USER -d $POSTGRES_DB -D /data
+scripts/get-fonts.sh
